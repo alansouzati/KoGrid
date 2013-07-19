@@ -2,9 +2,8 @@
 * koGrid JavaScript Library
 * Authors: https://github.com/ericmbarnard/koGrid/blob/master/README.md
 * License: MIT (http://www.opensource.org/licenses/mit-license.php)
-* Compiled At: 01/11/2013 15:58:36
+* Compiled At: 03/29/2013 14:29:44
 ***********************************************/
-
 (function (window) {
 'use strict';
 
@@ -22,7 +21,7 @@ window.kg.eventStorage = {};
 ***********************************************/
 var SELECTED_PROP = '__kg_selected__',
     GRID_KEY = '__koGrid__',
-    // the # of rows we want to add to the top and bottom of the rendered grid rows 
+    // the # of rows we want to add to the top and bottom of the rendered grid rows
     EXCESS_ROWS = 8,
     SCROLL_THRESHOLD = 6,
     ASC = "asc", // constant for sorting direction
@@ -38,7 +37,7 @@ var SELECTED_PROP = '__kg_selected__',
 ***********************************************/
 //set event binding on the grid so we can select using the up/down keys
 window.kg.moveSelectionHandler = function(grid, evt) {
-    // null checks 
+    // null checks
     if (window.kg.utils.isNullOrUndefined(grid) || window.kg.utils.isNullOrUndefined(grid.config.selectedItems)) {
         return true;
     }
@@ -60,7 +59,7 @@ grid.selectionService.ChangeSelection(items[index], evt);
         grid.$viewport.scrollTop(grid.$viewport.scrollTop() - (grid.config.rowHeight * EXCESS_ROWS));
     }
     return false;
-}; 
+};
 
 /***********************************************
 * FILE: ..\src\utils.js
@@ -171,9 +170,9 @@ window.kg.utils = {
             return seedId += 1;
         };
     })(),
-    
+
     // we copy KO's ie detection here bc it isn't exported in the min versions of KO
-    // Detect IE versions for workarounds (uses IE conditionals, not UA string, for robustness) 
+    // Detect IE versions for workarounds (uses IE conditionals, not UA string, for robustness)
     ieVersion: (function() {
         var version = 3, div = document.createElement('div'), iElems = div.getElementsByTagName('i');
         // Keep constructing conditional HTML blocks until we hit one that resolves to an empty fragment
@@ -198,7 +197,7 @@ $.extend(window.kg.utils, {
 /***********************************************
 * FILE: ..\src\templates\gridTemplate.html
 ***********************************************/
-window.kg.defaultGridTemplate = function(){ return '<div data-bind="css: {\'ui-widget\': jqueryUITheme, \'kgNoSelect\' : disableTextSelection}"><div class="kgTopPanel" data-bind="css: {\'ui-widget-header\':jqueryUITheme, \'ui-corner-top\': jqueryUITheme}, style: $data.topPanelStyle"><div class="kgGroupPanel" data-bind="visible: $data.showGroupPanel, style: headerStyle"><div class="kgGroupPanelDescription" data-bind="visible: configGroups().length == 0">Drag a column header here and drop it to group by that column</div><ul data-bind="visible: configGroups().length > 0, foreach: configGroups" class="kgGroupList"><li class="kgGroupItem"><span class="kgGroupElement"><div class="kgGroupName"><span data-bind="text: displayName"></span><span data-bind="click: function(data) { $root.removeGroup($index()) }" class="kgRemoveGroup">x</span></div><span data-bind="visible: $index() < ($root.configGroups().length - 1)" class="kgGroupArrow"></span></span></li></ul></div><div class="kgHeaderContainer" data-bind="style: headerStyle"><div class="kgHeaderScroller" data-bind="style: headerScrollerStyle, kgHeaderRow: $data" ></div></div><div class="kgHeaderButton" data-bind="visible: ($data.showColumnMenu || $data.showFilter), click: toggleShowMenu"><div class="kgHeaderButtonArrow"></div></div><div data-bind="visible: showMenu" class="kgColMenu"><div data-bind="visible: showFilter"><input placeholder="Seach Field:Value" type="text" data-bind="value: filterText, valueUpdate: \'afterkeydown\'"/></div><div data-bind="visible: showColumnMenu"><span class="kgMenuText">Choose Columns:</span><ul class="kgColList" data-bind="foreach: nonAggColumns"><li class="kgColListItem"><label style="position: relative;"><input type="checkbox" class="kgColListCheckbox" data-bind="checked: visible"/><span data-bind="text: displayName, click: toggleVisible"></span><a title="Group By" data-bind="attr: {\'class\': groupedByClass }, visible: (field != \'\u2714\'), click: $parent.groupBy"></a><span class="kgGroupingNumber" data-bind="visible: groupIndex() > 0, text: groupIndex"></span></label></li></ul></div></div></div><div class="kgViewport" data-bind="css: {\'ui-widget-content\': jqueryUITheme}, style: viewportStyle"><div class="kgCanvas" data-bind="style: canvasStyle"><div data-bind="foreach: renderedRows" style="position: absolute;"><div data-bind="style: { \'top\': offsetTop, \'height\': $parent.rowHeight + \'px\' }, click: toggleSelected, css: {\'selected\': selected, \'even\': isEven , \'odd\': isOdd, \'ui-state-default\': $parent.jqueryUITheme && isOdd, \'ui-state-active\':$parent.jqueryUITheme && isEven}, kgRow: $data" class="kgRow"></div></div></div></div><div class="kgFooterPanel" data-bind="css: {\'ui-widget-content\': jqueryUITheme, \'ui-corner-bottom\': jqueryUITheme}, style: footerStyle"><div class="kgTotalSelectContainer" data-bind="visible: footerVisible"><div class="kgFooterTotalItems" data-bind="css: {\'kgNoMultiSelect\': !multiSelect}" ><span class="kgLabel">Total Items: <span data-bind="text: maxRowsDisplay"></span></span><span data-bind="visible: filterText().length > 0" class="kgLabel">(Showing: <span data-bind="text: totalFilteredItemsLength"></span>)</span></div><div class="kgFooterSelectedItems" data-bind="visible: multiSelect"><span class="kgLabel">Selected Items: <span data-bind="text: selectedItemCount"></span></span></div></div><div class="kgPagerContainer" style="float: right; margin-top: 10px;" data-bind="visible: (footerVisible && enablePaging), css: {\'kgNoMultiSelect\': !multiSelect}"><div style="float:left; margin-right: 10px;" class="kgRowCountPicker"><span style="float: left; margin-top: 3px;" class="kgLabel">Page Size:</span><select style="float: left;height: 27px; width: 100px" data-bind="value: pagingOptions.pageSize, options: pagingOptions.pageSizes"></select></div><div style="float:left; margin-right: 10px; line-height:25px;" class="kgPagerControl" style="float: left; min-width: 135px;"><button class="kgPagerButton" data-bind="click: pageToFirst, disable: cantPageBackward()" title="First Page"><div class="kgPagerFirstTriangle"><div class="kgPagerFirstBar"></div></div></button><button class="kgPagerButton" data-bind="click: pageBackward, disable: cantPageBackward()" title="Previous Page"><div class="kgPagerFirstTriangle kgPagerPrevTriangle"></div></button><input class="kgPagerCurrent" type="number" style="width:50px; height: 24px; margin-top: 1px; padding: 0px 4px;" data-bind="value: pagingOptions.currentPage, valueUpdate: \'afterkeydown\'"/><button class="kgPagerButton" data-bind="click: pageForward, disable: cantPageForward()" title="Next Page"><div class="kgPagerLastTriangle kgPagerNextTriangle"></div></button><button class="kgPagerButton" data-bind="click: pageToLast, disable: cantPageForward()" title="Last Page"><div class="kgPagerLastTriangle"><div class="kgPagerLastBar"></div></div></button></div></div></div></div>';};
+window.kg.defaultGridTemplate = function(){ return '<div data-bind="css: {\'ui-widget\': jqueryUITheme, \'kgNoSelect\' : disableTextSelection}"><div class="kgTopPanel" data-bind="css: {\'ui-widget-header\':jqueryUITheme, \'ui-corner-top\': jqueryUITheme}, style: $data.topPanelStyle"><div class="kgGroupPanel" data-bind="visible: $data.showGroupPanel, style: headerStyle"><div class="kgGroupPanelDescription" data-bind="visible: configGroups().length == 0">Drag a column header here and drop it to group by that column</div><ul data-bind="visible: configGroups().length > 0, foreach: configGroups" class="kgGroupList"><li class="kgGroupItem"><span class="kgGroupElement"><div class="kgGroupName"><span data-bind="text: displayName"></span><span data-bind="click: function(data) { $root.removeGroup($index()) }" class="kgRemoveGroup">x</span></div><span data-bind="visible: $index() < ($root.configGroups().length - 1)" class="kgGroupArrow"></span></span></li></ul></div><div class="kgHeaderContainer" data-bind="style: headerStyle"><div class="kgHeaderScroller" data-bind="style: headerScrollerStyle, kgHeaderRow: $data" ></div></div><div class="kgHeaderButton" data-bind="visible: ($data.showColumnMenu || $data.showFilter), click: toggleShowMenu"><div class="kgHeaderButtonArrow"></div></div><div data-bind="visible: showMenu" class="kgColMenu"><div data-bind="visible: showFilter"><input placeholder="Seach Field:Value" type="text" data-bind="value: filterText, valueUpdate: \'afterkeydown\'"/></div><div data-bind="visible: showColumnMenu"><span class="kgMenuText">Choose Columns:</span><ul class="kgColList" data-bind="foreach: nonAggColumns"><li class="kgColListItem"><label style="position: relative;"><input type="checkbox" class="kgColListCheckbox" data-bind="checked: visible"/><span data-bind="text: displayName, click: toggleVisible"></span><a title="Group By" data-bind="attr: {\'class\': groupedByClass }, visible: (field != \'\u2714\'), click: $parent.groupBy"></a><span class="kgGroupingNumber" data-bind="visible: groupIndex() > 0, text: groupIndex"></span></label></li></ul></div></div></div><div class="kgViewport" data-bind="css: {\'ui-widget-content\': jqueryUITheme}, style: viewportStyle"><div class="kgCanvas" data-bind="style: canvasStyle"><div data-bind="foreach: renderedRows" style="position: absolute;"><div data-bind="style: { \'top\': offsetTop, \'height\': $parent.rowHeight + \'px\' }, click: toggleSelected, css: {\'selected\': selected, \'even\': isEven , \'odd\': isOdd, \'ui-state-default\': $parent.jqueryUITheme && isOdd, \'ui-state-active\':$parent.jqueryUITheme && isEven}, kgRow: $data" class="kgRow"></div></div></div></div><div class="kgFooterPanel" data-bind="kgFooterRow: $data, style: footerStyle"></div></div>';};
 
 /***********************************************
 * FILE: ..\src\templates\rowTemplate.html
@@ -219,6 +218,11 @@ window.kg.aggregateTemplate = function(){ return '<div data-bind="click: toggleE
 * FILE: ..\src\templates\headerRowTemplate.html
 ***********************************************/
 window.kg.defaultHeaderRowTemplate = function(){ return '<div data-bind="foreach: visibleColumns"><div data-bind="kgHeaderCell: $data, attr: { \'class\': \'kgHeaderCell col\' + $index() }"></div></div>';};
+
+/***********************************************
+* FILE: ..\src\templates\footerRowTemplate.html
+***********************************************/
+window.kg.defaultFooterRowTemplate = function(){ return '<div data-bind="css: {\'ui-widget-content\': jqueryUITheme, \'ui-corner-bottom\': jqueryUITheme}"><div class="kgTotalSelectContainer" data-bind="visible: footerVisible"><div class="kgFooterTotalItems" data-bind="css: {\'kgNoMultiSelect\': !multiSelect}" ><span class="kgLabel">Total Items: <span data-bind="text: maxRowsDisplay"></span></span><span data-bind="visible: filterText().length > 0" class="kgLabel">(Showing: <span data-bind="text: totalFilteredItemsLength"></span>)</span></div><div class="kgFooterSelectedItems" data-bind="visible: multiSelect"><span class="kgLabel">Selected Items: <span data-bind="text: selectedItemCount"></span></span></div></div><div class="kgPagerContainer" style="float: right; margin-top: 10px;" data-bind="visible: (footerVisible && enablePaging), css: {\'kgNoMultiSelect\': !multiSelect}"><div style="float:left; margin-right: 10px;" class="kgRowCountPicker"><span style="float: left; margin-top: 3px;" class="kgLabel">Page Size:</span><select style="float: left;height: 27px; width: 100px" data-bind="value: pagingOptions.pageSize, options: pagingOptions.pageSizes"></select></div><div style="float:left; margin-right: 10px; line-height:25px;" class="kgPagerControl" style="float: left; min-width: 135px;"><button class="kgPagerButton" data-bind="click: pageToFirst, disable: cantPageBackward()" title="First Page"><div class="kgPagerFirstTriangle"><div class="kgPagerFirstBar"></div></div></button><button class="kgPagerButton" data-bind="click: pageBackward, disable: cantPageBackward()" title="Previous Page"><div class="kgPagerFirstTriangle kgPagerPrevTriangle"></div></button><input class="kgPagerCurrent" type="number" style="width:50px; height: 24px; margin-top: 1px; padding: 0px 4px;" data-bind="value: pagingOptions.currentPage, valueUpdate: \'afterkeydown\'"/><button class="kgPagerButton" data-bind="click: pageForward, disable: cantPageForward()" title="Next Page"><div class="kgPagerLastTriangle kgPagerNextTriangle"></div></button><button class="kgPagerButton" data-bind="click: pageToLast, disable: cantPageForward()" title="Last Page"><div class="kgPagerLastTriangle"><div class="kgPagerLastBar"></div></div></button></div></div></div>';};
 
 /***********************************************
 * FILE: ..\src\templates\headerCellTemplate.html
@@ -357,6 +361,30 @@ ko.bindingHandlers['kgHeaderRow'] = (function () {
 }());
 
 /***********************************************
+* FILE: ..\src\bindingHandlers\kg-footer-row.js
+***********************************************/
+ko.bindingHandlers['kgFooterRow'] = (function () {
+    return {
+        'init': function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+            bindingContext.$userViewModel = bindingContext.$data.$userViewModel;
+            var compile = function(html) {
+                var footer = $(html);
+                ko.applyBindings(bindingContext, footer[0]);
+                $(element).html(footer);
+            };
+            if (viewModel.footerRowTemplate.then) {
+                viewModel.footerRowTemplate.then(function (p) {
+                    compile(p);
+                });
+            } else {
+                compile(viewModel.footerRowTemplate);
+            }
+            return { controlsDescendantBindings: true };
+        }
+    };
+}());
+
+/***********************************************
 * FILE: ..\src\bindingHandlers\kg-header-cell.js
 ***********************************************/
 ko.bindingHandlers['kgHeaderCell'] = (function () {
@@ -473,7 +501,7 @@ window.kg.Aggregate = function (aggEntity, rowFactory) {
     self.isEven = ko.observable(false);
     self.isOdd = ko.observable(false);
     self.toggleSelected = function () { return true; };
-}; 
+};
 
 /***********************************************
 * FILE: ..\src\classes\column.js
@@ -484,6 +512,7 @@ window.kg.Column = function (config, grid) {
 		delay = 500,
         clicks = 0,
         timer = null;
+	self.config = config;
     self.eventTaget = undefined;
     self.width = colDef.width;
 	self.groupIndex = ko.observable(0);
@@ -552,7 +581,7 @@ window.kg.Column = function (config, grid) {
     });
     self.showSortButtonDown = ko.computed(function () {
         return self.sortable ? self.sortDirection() === ASC : self.sortable;
-    });     
+    });
     self.noSortVisible = ko.computed(function () {
         return !self.sortDirection();
     });
@@ -564,7 +593,7 @@ window.kg.Column = function (config, grid) {
         self.sortDirection(dir);
         config.sortCallback(self, dir);
         return false;
-    };   
+    };
     self.gripClick = function (data, event) {
         event.stopPropagation();
         clicks++;  //count clicks
@@ -640,7 +669,7 @@ window.kg.EventProvider = function (grid) {
 					self.onGroupDrop(event);
 				}
 			});
-			$(document).ready(self.setDraggables);	
+			$(document).ready(self.setDraggables);
 		} else {
 			grid.$groupPanel.on('mousedown', self.onGroupMouseDown).on('dragover', self.dragOver).on('drop', self.onGroupDrop);
 			grid.$headerScroller.on('mousedown', self.onHeaderMouseDown).on('dragover', self.dragOver).on('drop', self.onHeaderDrop);
@@ -653,11 +682,11 @@ window.kg.EventProvider = function (grid) {
     };
     self.dragOver = function(evt) {
         evt.preventDefault();
-    };	
-	
+    };
+
 	//For JQueryUI
 	self.setDraggables = function(){
-		if(!grid.config.jqueryUIDraggable){	
+		if(!grid.config.jqueryUIDraggable){
 			grid.$root.find('.kgHeaderSortColumn').attr('draggable', 'true');
 			if (navigator.userAgent.indexOf("MSIE") != -1)
 			{
@@ -719,7 +748,7 @@ window.kg.EventProvider = function (grid) {
                         grid.configGroups.splice(groupScope.groupIndex(), 0, self.groupToMove.groupName);
 					}
                 }
-            }			
+            }
 			self.groupToMove = undefined;
 			grid.fixGroupIndexes();
         } else {
@@ -733,21 +762,21 @@ window.kg.EventProvider = function (grid) {
 						// Splice the columns
 				        grid.removeGroup(groupScope.groupIndex());
 					}
-				}	
-            }			
+				}
+            }
 			self.colToMove = undefined;
         }
     };
-	
+
     //Header functions
     self.onHeaderMouseDown = function (event) {
         // Get the closest header container from where we clicked.
         var headerContainer = $(event.target).closest('.kgHeaderSortColumn');
         if (!headerContainer[0]) {
             return true;
-        } 
+        }
         // Get the scope from the header container
-        
+
         var headerScope = ko.dataFor(headerContainer[0]);
         if (headerScope) {
             // Save the column for later.
@@ -759,7 +788,7 @@ window.kg.EventProvider = function (grid) {
     self.onHeaderDrop = function (event) {
         if (!self.colToMove) {
             return true;
-        } 
+        }
         // Get the closest header to where we dropped
         var headerContainer = $(event.target).closest('.kgHeaderSortColumn');
         if (!headerContainer[0]) {
@@ -771,7 +800,7 @@ window.kg.EventProvider = function (grid) {
             // If we have the same column, do nothing.
             if (self.colToMove.col == headerScope) {
                 return true;
-            } 
+            }
             // Splice the columns
             var cols = grid.columns.peek();
             cols.splice(self.colToMove.col.index, 1);
@@ -785,7 +814,7 @@ window.kg.EventProvider = function (grid) {
         }
         return true;
     };
-    
+
     // Row functions
     self.onRowMouseDown = function (event) {
         // Get the closest row element from where we clicked.
@@ -813,7 +842,7 @@ window.kg.EventProvider = function (grid) {
             var prevRow = window.kg.eventStorage.rowToMove;
             if (prevRow.scope == rowScope) {
                 return;
-            } 
+            }
             // Splice the Rows via the actual datasource
             var sd = grid.sortedData();
             var i = sd.indexOf(prevRow.scope.entity);
@@ -839,7 +868,7 @@ window.kg.EventProvider = function (grid) {
         });
         //Chrome and firefox both need a tab index so the grid can recieve focus.
         //need to give the grid a tabindex if it doesn't already have one so
-        //we'll just give it a tab index of the corresponding gridcache index 
+        //we'll just give it a tab index of the corresponding gridcache index
         //that way we'll get the same result every time it is run.
         //configurable within the options.
         if (grid.config.tabIndex === -1) {
@@ -905,7 +934,7 @@ window.kg.RowFactory = function (grid) {
     };
 
     self.buildAggregateRow = function(aggEntity, rowIndex) {
-        var agg = self.aggCache[aggEntity.aggIndex]; // first check to see if we've already built it 
+        var agg = self.aggCache[aggEntity.aggIndex]; // first check to see if we've already built it
         if (!agg) {
             // build the row
             agg = new window.kg.Aggregate(aggEntity, self);
@@ -1049,7 +1078,7 @@ window.kg.RowFactory = function (grid) {
                 var val = window.kg.utils.evalProperty(item, group);
                 if (col.cellFilter) {
                     val = col.cellFilter(val);
-                } 
+                }
                 val = val ? val.toString() : 'null';
                 if (!ptr[val]) {
                     ptr[val] = {};
@@ -1062,7 +1091,7 @@ window.kg.RowFactory = function (grid) {
                 }
                 if (!ptr[KG_COLUMN]) {
                     ptr[KG_COLUMN] = col;
-                } 
+                }
                 ptr = ptr[val];
             });
             if (!ptr.values) {
@@ -1089,7 +1118,7 @@ window.kg.Grid = function (options) {
             columnWidth: 100,
             headerRowHeight: 30,
             footerRowHeight: 55,
-            footerVisible: true,			
+            footerVisible: true,
             displayFooter: undefined,
             canSelectRows: true,
             selectAllState: ko.observable(false),
@@ -1110,6 +1139,7 @@ window.kg.Grid = function (options) {
             columnsChanged: function() { },
             rowTemplate: undefined,
             headerRowTemplate: undefined,
+            footerRowTemplate: undefined,
             jqueryUITheme: false,
             jqueryUIDraggable: false,
             plugins: [],
@@ -1124,7 +1154,7 @@ window.kg.Grid = function (options) {
                 filterText: ko.observable(""),
                 useExternalFilter: false
             },
-            //Paging 
+            //Paging
             enablePaging: false,
             pagingOptions: {
                 pageSizes: ko.observableArray([250, 500, 1000]), //page Sizes
@@ -1134,7 +1164,7 @@ window.kg.Grid = function (options) {
             }
         },
         self = this;
-    
+
     self.maxCanvasHt = ko.observable(0);
     //self vars
     self.config = $.extend(defaults, options);
@@ -1225,10 +1255,10 @@ window.kg.Grid = function (options) {
         if (columnDefs.length > 0) {
             $.each(columnDefs, function (i, colDef) {
                 var column = new window.kg.Column({
-                    colDef: colDef, 
-                    index: i, 
+                    colDef: colDef,
+                    index: i,
                     headerRowHeight: self.config.headerRowHeight,
-                    sortCallback: self.sortData, 
+                    sortCallback: self.sortData,
                     resizeOnDataCallback: self.resizeOnData,
                     enableResize: self.config.enableColumnResize,
                     enableSort: self.config.enableSorting
@@ -1292,7 +1322,7 @@ window.kg.Grid = function (options) {
             // calculate the weight of each asterisk rounded down
             var asteriskVal = Math.floor(remainingWidth / asteriskNum);
             // set the width of each column based on the number of stars
-            $.each(asterisksArray, function (i, col) {				
+            $.each(asterisksArray, function (i, col) {
 				var t = col.width.length;
                 columns[col.index].width = asteriskVal * t;
                 //check if we are on the last column
@@ -1319,6 +1349,20 @@ window.kg.Grid = function (options) {
         self.columns(columns);
         window.kg.domUtilityService.BuildStyles(self);
     };
+
+    self.columnByField = function (field) {
+        if(field) {
+           var column;
+           $.each(self.columns(), function (i, c) {
+              if(field == c.field) {
+                 column = c;
+                 return false;
+              }
+           });
+           return column;
+        }
+    }
+
     self.init = function () {
         //factories and services
         self.selectionService = new window.kg.SelectionService(self);
@@ -1327,6 +1371,15 @@ window.kg.Grid = function (options) {
         self.searchProvider = new window.kg.SearchProvider(self);
         self.styleProvider = new window.kg.StyleProvider(self);
         self.buildColumns();
+        var sortingProperties = self.sortInfo.peek();
+        if(sortingProperties) {
+          var col = self.columnByField(sortingProperties.column.field);
+          if(col) {
+              col.sortDirection(sortingProperties.direction === ASC ? DESC : ASC);
+              col.sort();
+          }
+
+        }
         window.kg.sortService.columns = self.columns;
         self.configGroups.subscribe(function (a) {
             if (!a) {
@@ -1344,11 +1397,11 @@ window.kg.Grid = function (options) {
         self.filteredData.subscribe(function () {
             if (self.$$selectionPhase) {
                 return;
-            } 
+            }
 			self.maxCanvasHt(self.calcMaxCanvasHeight());
 			if (!self.isSorting) {
 			    self.configureColumnWidths();
-			} 
+			}
 		});
         self.maxCanvasHt(self.calcMaxCanvasHeight());
         self.searchProvider.evalFilter();
@@ -1366,7 +1419,7 @@ window.kg.Grid = function (options) {
         //Have we hit the threshold going up?
         if (self.prevScrollTop > scrollTop && rowIndex > self.prevScrollIndex - SCROLL_THRESHOLD) {
             return;
-        } 
+        }
         self.prevScrollTop = scrollTop;
         self.rowFactory.UpdateViewableRange(new window.kg.Range(Math.max(0, rowIndex - EXCESS_ROWS), rowIndex + self.minRowsToRender() + EXCESS_ROWS));
         self.prevScrollIndex = rowIndex;
@@ -1455,11 +1508,15 @@ window.kg.Grid = function (options) {
     //Templates
     self.rowTemplate = self.config.rowTemplate || window.kg.defaultRowTemplate();
     self.headerRowTemplate = self.config.headerRowTemplate || window.kg.defaultHeaderRowTemplate();
+    self.footerRowTemplate = self.config.footerRowTemplate || window.kg.defaultFooterRowTemplate();
     if (self.config.rowTemplate && !TEMPLATE_REGEXP.test(self.config.rowTemplate)) {
         self.rowTemplate = window.kg.utils.getTemplatePromise(self.config.rowTemplate);
     }
     if (self.config.headerRowTemplate && !TEMPLATE_REGEXP.test(self.config.headerRowTemplate)) {
         self.headerRowTemplate = window.kg.utils.getTemplatePromise(self.config.headerRowTemplate);
+    }
+    if (self.config.footerRowTemplate && !TEMPLATE_REGEXP.test(self.config.footerRowTemplate)) {
+        self.footerRowTemplate = window.kg.utils.getTemplatePromise(self.config.footerRowTemplate);
     }
     //scope funcs
     self.visibleColumns = ko.computed(function () {
@@ -1509,7 +1566,7 @@ window.kg.Grid = function (options) {
         window.kg.domUtilityService.BuildStyles(self);
     };
     self.removeGroup = function(index) {
-		var col = self.columns().filter(function(item){ 
+		var col = self.columns().filter(function(item){
 			return item.groupIndex() == (index + 1);
 		})[0];
 		col.isGroupedBy(false);
@@ -1522,7 +1579,7 @@ window.kg.Grid = function (options) {
         }
         window.kg.domUtilityService.BuildStyles(self);
     };
-	self.fixGroupIndexes = function(){		
+	self.fixGroupIndexes = function(){
 		$.each(self.configGroups(), function(i,item){
 			item.groupIndex(i + 1);
 		});
@@ -1587,7 +1644,7 @@ window.kg.Grid = function (options) {
         var curPage = self.config.pagingOptions.currentPage();
         return !(curPage > 1);
     });
-    //call init
+	//call init
     self.init();
 };
 
@@ -1621,10 +1678,10 @@ window.kg.Row = function (entity, config, selectionService) {
             return true;
         }
         var element = event.target || event;
-        //check and make sure its not the bubbling up of our checked 'click' event 
+        //check and make sure its not the bubbling up of our checked 'click' event
         if (element.type == "checkbox") {
             self.selected(!self.selected());
-        } 
+        }
         if (config.selectWithCheckboxOnly && element.type != "checkbox"){
             return true;
         } else {
@@ -1654,7 +1711,7 @@ window.kg.Row = function (entity, config, selectionService) {
     self.isOdd = ko.computed(function () {
         if (self.rowIndex() % 2 !== 0) {
             return true;
-        } 
+        }
         return false;
     });
     self.beforeSelectionChange = config.beforeSelectionChangeCallback;
@@ -1663,7 +1720,7 @@ window.kg.Row = function (entity, config, selectionService) {
     self.getProperty = function (path) {
         return self.propertyCache[path] || (self.propertyCache[path] = window.kg.utils.evalProperty(self.entity, path));
     };
-}; 
+};
 
 /***********************************************
 * FILE: ..\src\classes\searchProvider.js
@@ -1789,7 +1846,7 @@ window.kg.SelectionService = function (grid) {
 	self.Initialize = function (rowFactory) {
         self.rowFactory = rowFactory;
     };
-		
+
 	// function to manage the selection action of a data item (entity)
 	self.ChangeSelection = function (rowItem, evt) {
 	    grid.$$selectionPhase = true;
@@ -1836,7 +1893,7 @@ window.kg.SelectionService = function (grid) {
         return true;
     };
 
-    // just call this func and hand it the rowItem you want to select (or de-select)    
+    // just call this func and hand it the rowItem you want to select (or de-select)
     self.setSelection = function(rowItem, isSelected) {
         rowItem.selected(isSelected) ;
         rowItem.entity[SELECTED_PROP] = isSelected;
@@ -1849,7 +1906,7 @@ window.kg.SelectionService = function (grid) {
             }
         }
     };
-    
+
     // @return - boolean indicating if all items are selected or not
     // @val - boolean indicating whether to select all/de-select all
     self.toggleSelectAll = function (checkAll) {
@@ -1910,7 +1967,7 @@ window.kg.sortService = {
 
         if (item === undefined || item === null || item === '') {
             return null;
-        } 
+        }
         itemType = typeof(item);
         //check for numbers and booleans
         switch (itemType) {
@@ -1927,20 +1984,20 @@ window.kg.sortService = {
         //if we found one, return it
         if (sortFn) {
             return sortFn;
-        } 
+        }
         //check if the item is a valid Date
         if (Object.prototype.toString.call(item) === '[object Date]') {
             return window.kg.sortService.sortDate;
-        } 
+        }
         // if we aren't left with a string, return a basic sorting function...
         if (itemType !== "string") {
             return window.kg.sortService.basicSort;
-        } 
+        }
         // now lets string check..
         //check if the item data is a valid number
-        if (item.match(/^-?[£$¤]?[\d,.]+%?$/)) {
+        if (item.match(/^-?[?$?]?[\d,.]+%?$/)) {
             return window.kg.sortService.sortNumberStr;
-        } 
+        }
         // check for a date: dd/mm/yyyy or dd/mm/yy
         // can have / or . or - as separator
         // can be mm/dd as well
@@ -1996,7 +2053,7 @@ window.kg.sortService = {
         }
         if (badB) {
             return -1;
-        } 
+        }
         return numA - numB;
     },
     sortAlpha: function(a, b) {
@@ -2027,10 +2084,10 @@ window.kg.sortService = {
         d = mtch[1];
         if (m.length == 1) {
             m = '0' + m;
-        } 
+        }
         if (d.length == 1) {
             d = '0' + d;
-        } 
+        }
         dateA = y + m + d;
         mtch = b.match(window.kg.sortService.dateRE);
         y = mtch[3];
@@ -2073,11 +2130,11 @@ window.kg.sortService = {
         }
         if (d.length == 1) {
             d = '0' + d;
-        } 
+        }
         dateB = y + m + d;
         if (dateA == dateB) {
             return 0;
-        } 
+        }
         if (dateA < dateB) {
             return -1;
         }
@@ -2201,7 +2258,7 @@ window.kg.domUtilityService = {
             css,
             cols = grid.visibleColumns(),
             sumWidth = 0;
-        
+
         if (!$style) {
             $style = $('#' + gridId);
             if (!$style[0]) {
@@ -2215,7 +2272,7 @@ window.kg.domUtilityService = {
               "." + gridId + " .kgRow { width: " + trw + "px; }" +
               "." + gridId + " .kgCell { height: " + rowHeight + "px; }"+
               "." + gridId + " .kgCanvas { width: " + trw + "px; }" +
-              "." + gridId + " .kgHeaderCell { top: 0; bottom: 0; }" + 
+              "." + gridId + " .kgHeaderCell { top: 0; bottom: 0; }" +
               "." + gridId + " .kgHeaderScroller { width: " + (trw + window.kg.domUtilityService.scrollH + 2) + "px}";
         $.each(cols, function (i, col) {
             css += "." + gridId + " .col" + i + " { width: " + col.width + "px; left: " + sumWidth + "px; right: " + (trw - sumWidth - col.width) + "px; height: " + rowHeight + "px }" +
